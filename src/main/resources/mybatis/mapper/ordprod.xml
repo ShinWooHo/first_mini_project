@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mycompany.javajavajo.dao.OrdProdDao">
+	<insert id="insert" parameterType="OrdProd">
+		insert into ordprod (ordno, prodno, qty, subtot)
+		values (#{ordno}, #{prodno}, #{qty}, #{subtot})
+	</insert>
+	
+	<select id="selectOutlineOfOrdProd" parameterType="Order">
+		select 
+		max(prodno) as oneOfOrdProduct, count(*) as ordProductCnt
+		from (
+    		select prodno from ordprod where ordno = #{ordno}
+		)
+	</select>
+	
+	<select id="selectOrdProdListByOrdno" parameterType="int" resultType="OrdProd">
+		select ordno, ordprod.prodno as prodno, qty, subtot, prodprice, prodname
+		from ordprod, product
+		where ordprod.prodno = product.prodno
+		and ordno = #{ordno}
+	</select>
+
+</mapper>

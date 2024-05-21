@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mycompany.javajavajo.dao.CartItemDao">
+	<select id="selectByMemno" parameterType="int" resultType="com.mycompany.javajavajo.dto.CartItem">
+		select *
+		from cartItem
+		where memno = ${memno}
+	</select>
+	
+	<update id="updateCart">
+		update cartitem
+		set qty = 
+			<if test='operator.equals("+")'>
+				qty + 1
+			</if>
+			<if test='operator.equals("-")'>
+				qty - 1
+			</if>
+		where memno = #{memno}
+		and prodno = #{prodno}
+	</update>
+	
+
+	<delete id="deleteCartItems">
+		delete from cartitem
+		where memno = #{memno} 
+		and prodno in
+		<foreach item="prodno" collection="prodnos"
+      		open="(" separator="," close=")">
+        	#{prodno}
+  		</foreach>
+	</delete>
+	
+	<insert id="insertCartItems" parameterType="cartItem">
+		insert into cartItem (memno, prodno, qty)
+		values(#{memno}, #{prodno}, #{qty})
+	</insert>
+	
+	<update id="updateByAddQty">
+		update cartItem
+		set qty = #{qty}+1
+		where memno = #{memno}
+		and prodno = #{prodno}
+	</update>
+	
+	<insert id="insertCartItem" parameterType="cartItem">
+		insert into cartItem (memno, prodno, qty)
+		values(#{memno}, #{prodno}, #{qty})
+	</insert>
+	
+	<update id="updateCartItem">
+		update cartItem
+		set qty = qty + #{qty}
+		where memno = #{memno} and prodno = #{prodno}
+		
+	</update>
+	
+</mapper>

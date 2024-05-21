@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mycompany.javajavajo.dao.PointDtlDao">
+	<insert id="insert"  parameterType="PointDtl">
+		insert into pointdtl (ordno, action, amount)
+		values	(#{ordno}, #{action}, #{amount})
+	</insert>
+	
+	<select id="selectPointDtlByOrdnoAndAction" parameterType="int" resultType="PointDtl">
+		select * from pointdtl where ordno = #{ordno} and action = #{action}
+	</select>
+	
+	<delete id="delete">
+		delete pointdtl
+		where ordno = #{ordno}
+	</delete>
+</mapper>

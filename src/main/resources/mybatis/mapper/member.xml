@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mycompany.javajavajo.dao.MemberDao">
+
+	<select id="selectByMid" parameterType="String"
+		resultType="Member">
+		select memno, memid, mempw, memname, memnicknm, mememail,
+		memtel, mempoint, memdate, memrole, memenabled
+		from member
+		where memid =
+		#{memid}
+	</select>
+
+	<!-- 신우호 : 회원가입 후 회원정보 db에 삽입 -->
+	<insert id="insert" parameterType="Member">
+		<selectKey keyProperty="memno" order="BEFORE"
+			resultType="int">
+			select member_seq.nextval from dual
+		</selectKey>
+		insert into member (memno, memid, mempw, memname, memnicknm, mememail,
+		memtel, mempoint, memdate, memrole, memenabled)
+		values(#{memno}, #{memid},
+		#{mempw}, #{memname}, #{memnicknm}, #{mememail}, #{memtel}, 0,
+		sysdate, 'ROLE_USER', 1)
+	</insert>
+
+	<select id="selectByMemno" parameterType="int"
+		resultType="Member">
+		select memno, memid, memname, mememail, memtel, memdate,
+		mempoint
+		from member
+		where memno = #{memno}
+	</select>
+
+	<select id="selectByMemnoMemImg" parameterType="int"
+		resultType="Member">
+		select memimg, memimgtype, memimgoname
+		from member
+		where
+		memno = #{memno}
+	</select>
+	
+	<select id="selectTotalRows" resultType="int" parameterType="SearchIndex">
+		select count(*) from member where memrole != 'ROLE_ADMIN'
+		<if test="searchindex != null and searchindex == 1">
+			and memname like '%' || #{searchkeyword} || '%'
+		</if>
+		<if test="searchindex != null and searchindex == 2">
+			and mememail like '%' || #{searchkeyword} || '%'
+		</if>
+	</select>
+
+
+	
+	<select id="selectByPage" resultType="Member" parameterType="SearchIndex">
+		select rnum, memno, memid, memname, mememail, memtel, memdate
+		from (
+		select rownum as rnum, memno, memid, memname, mememail, memtel, memdate
+		from (
+		select memno, memid, memname, mememail, memtel, memdate
+		from member
+		where memrole != 'ROLE_ADMIN'
+		<if test="searchindex != null and searchindex == 1">
+			and memname like '%' || #{searchkeyword} || '%'
+		</if>
+		<if test="searchindex != null and searchindex == 2">
+			and mememail like '%' || #{searchkeyword} || '%'
+		</if>
+		order by memno desc
+		)
+		where rownum <![CDATA[<]]>= #{pager.endRowNo}
+		)
+		where rnum <![CDATA[>]]>= #{pager.startRowNo}
+		
+	</select>
+
+	<update id="updateMemberInfo" parameterType="Member">
+		update member set
+		mememail = #{mememail}, memtel = #{memtel}
+		<if test="mempw != null">
+			, mempw = #{mempw}
+		</if>
+		<if test="memname != null">
+			, memname = #{memname}
+		</if>
+		<if test="memnicknm != null">
+			, memnicknm = #{memnicknm}
+		</if>
+		<if test="memimgoname != null">
+			, memimgoname = #{memimgoname},
+			memimgtype = #{memimgtype},
+			memimg = #{memimg}
+		</if>
+		where memno = #{memno}
+	</update>
+
+	<update id="updatePassword" parameterType="Member">
+		update member
+		set mempw
+		= #{mempw}
+		where memno = #{memno}
+	</update>
+
+	<update id="updatePoint">
+		update member
+		set mempoint =
+		<if test='operator.equals("+")'>
+			mempoint + #{amount}
+		</if>
+
+		<if test='operator.equals("-")'>
+			mempoint - #{amount}
+		</if>
+		where memno = #{memno}
+	</update>
+
+	<update id="updatePointByAdmin" parameterType="Member">
+		update member
+		set
+		mempoint = #{mempoint}
+		where memno = #{memno}
+	</update>
+
+	<!-- 황세림 : 회원 정보 수정 -->
+	<update id="updateMemberInformation" parameterType="Member">
+		update member
+		set
+		<if test="mempw!=''">
+		mempw = #{mempw},
+		</if> 
+		memname = #{memname},
+		memimg = #{memimg},
+		memimgoname =#{memimgoname},
+		memimgtype=#{memimgtype},
+		memnicknm = #{memnicknm},
+		mememail = #{mememail},
+		memtel = #{memtel}
+		where memid = #{memid}
+	</update>
+
+
+</mapper>

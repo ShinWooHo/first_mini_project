@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mycompany.javajavajo.dao.MemberAdrDao">
+
+	<insert id="insertAdr" parameterType="MemberAdr">
+		insert into memberAdr
+		(memno, postno, adr, adrdtl, adrno)
+		values(#{memno}, #{postno}, #{adr},
+		#{adrdtl}, memberadr_seq.nextval)
+	</insert>
+
+	<select id="selectByMemno" parameterType="int">
+		select *
+		from memberadr
+		where memno = #{memno}
+	</select>
+
+	<update id="updateMemberAddress" parameterType="MemberAdr">
+		update memberadr
+		set
+		postno = #{postno},
+		adr = #{adr},
+		adrdtl = #{adrdtl}
+		where memno = #{memno}
+	</update>
+
+
+</mapper>
+
+	
