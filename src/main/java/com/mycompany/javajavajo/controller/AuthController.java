@@ -43,6 +43,7 @@ public class AuthController {
 	//신우호 - member, memberAdr 매개변수로 받아 서비스 호출하여 로직처리 함
 	@PostMapping("/auth")
 	public String auth(Member member, MemberAdr memberadr) {
+		log.info(member.toString());
 		service.auth(member, memberadr);
 		log.info(memberadr.getAdr());
 		return "redirect:/auth/signin";
